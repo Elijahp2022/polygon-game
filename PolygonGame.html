@@ -8,27 +8,28 @@
     var ground;
     var triangle;
 
-    scaleRatio = window.devicePixelRatio / 3;
     function preload()
 {
     game.load.image('background', 'assets/polygonScreen.png');
     game.load.image('triangle', 'assets/TrianglePoly.png');
     game.load.image('ground', 'assets/polyGround.png');
+    game.load.image('spikes', 'assets/spikeCube.png');
 }
 function create()
 {
     screen = game.add.sprite(0, 0, 'background');
     screen.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
-    triangle = game.add.sprite(50, 100, 'triangle');
-    ground = game.add.sprite(0, game.world.height, 'ground');
-    ground.scale.setTo(100, 1);
+    triangle = game.add.sprite(50, game.world.height - 94, 'triangle');
     top1 = game.add.sprite(0, 0, 'ground');
-    top1.scale.setTo(100, 1);
+    top1.scale.setTo(game.world.width, 1);
+    ground = game.add.sprite(0, game.world.height - 32, 'ground');
+    ground.scale.setTo(game.world.width, 1);
+
 }
 function update()
 {
-    game.world.width = window.innerWidth;
-    game.world.height = window.innerHeight;
+
+
 }
 
 
