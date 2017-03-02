@@ -3,10 +3,33 @@
 <script src="Phaser.min.js"></script>
 <script>
     game = new Phaser.Game(document.body.offsetWidth, document.body.offsetHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update});
-    var screen;
+    var screen1;
     var top1;
     var ground;
-    var triangle;
+    var player;
+    var obstacle;
+    var touchingGround = false;
+
+    function touchingGroundChange()
+    {
+        if(touchingGround === false) {
+            touchingGround = !touchingGround
+        }
+
+    }
+
+    function jump2()
+    {
+        player.body.velocity.y = -300;
+    }
+
+    function jump()
+    {
+        if(screen1.events.onInputDown){
+            player.body.velocity.y = -300;
+        }
+        //screen1.events.onInputDown.add(jump2, this);
+    }
 
     function preload()
 {
@@ -14,21 +37,53 @@
     game.load.image('triangle', 'assets/TrianglePoly.png');
     game.load.image('ground', 'assets/polyGround.png');
     game.load.image('spikes', 'assets/spikeCube.png');
+    game.load.image('upArrow', 'assets/upArrow.png');
 }
 function create()
 {
-    screen = game.add.sprite(0, 0, 'background');
-    screen.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
-    triangle = game.add.sprite(50, game.world.height - 94, 'triangle');
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    screen1 = game.add.sprite(0, 0, 'background');
+    screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
+    player = game.add.sprite(50, game.world.height - 300, 'triangle');
     top1 = game.add.sprite(0, 0, 'ground');
     top1.scale.setTo(game.world.width, 1);
     ground = game.add.sprite(0, game.world.height - 32, 'ground');
     ground.scale.setTo(game.world.width, 1);
+    cursors = game.input.keyboard.createCursorKeys();
 
+
+    player.enableBody = true;
+    game.physics.arcade.enable(player);
+    player.body.gravity.y = 300;
+
+    top1.enableBody = true;
+    game.physics.arcade.enable(top1);
+    top1.body.immovable = true;
+
+    ground.enableBody = true;
+    game.physics.arcade.enable(ground);
+    ground.body.immovable = true;
+
+
+    obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+    obstacle.enableBody = true;
+    game.physics.arcade.enable(obstacle);
+    obstacle.body.velocity.x = -300;
+    //obstacle.inputEnabled = true;
+    //ground.inputEnabled = true;
+    screen1.inputEnabled = true;
+    player.body.gravity.y = 300;
 }
 function update()
 {
-
+    game.physics.arcade.collide(player, ground, touchingGroundChange);
+    game.physics.arcade.collide(player, top1);
+    //if(touchingGround === true && screen1.events.onInputDown){
+      //  player.body.velocity.y = -300;
+    //}
+    if(player.body.touching.down && game.input.activePointer.isDown){
+        player.body.velocity.y = -300;
+    }
 
 }
 
