@@ -8,83 +8,145 @@
     var ground;
     var player;
     var obstacle;
-    var touchingGround = false;
+    var obstacles;
+    var timer;
+    var score = 0;
+    var choice;
+    var playerLife;
+    var block;
+    var layers;
 
-    function touchingGroundChange()
-    {
-        if(touchingGround === false) {
-            touchingGround = !touchingGround
+    function addThing() {
+        choice = Math.random();
+        console.log(choice);
+
+        block = null;
+        obstacle = null;
+
+        if(obstacle) {
+            obstacle.kill();
         }
 
-    }
-
-    function jump2()
-    {
-        player.body.velocity.y = -300;
-    }
-
-    function jump()
-    {
-        if(screen1.events.onInputDown){
-            player.body.velocity.y = -300;
+        if(block) {
+            block.kill();
         }
-        //screen1.events.onInputDown.add(jump2, this);
+        
+        if (choice < 0.34) {
+            obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+            obstacle.enableBody = true;
+            game.physics.arcade.enable(obstacle);
+            obstacle.body.velocity.x = -300;
+        } else if ( choice < 0.67) {
+            //do nothing
+            game.time.events.add(Phaser.Timer.SECOND * choice * 10,
+                    addThing, this);
+        } else if ( choice < 1.0) {
+            block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
+            block.scale.setTo(.25, 1);
+            block.enableBody = true;
+            game.physics.arcade.enable(block);
+            block.body.immovable = true;
+            block.body.velocity.x = -300
+        }
+    }
+
+    function killPlayer()
+    {
+        player.kill();
+        obstacle.kill();
+        playerLife = false;
+        loseText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
     }
 
     function preload()
-{
-    game.load.image('background', 'assets/polygonScreen.png');
-    game.load.image('triangle', 'assets/TrianglePoly.png');
-    game.load.image('ground', 'assets/polyGround.png');
-    game.load.image('spikes', 'assets/spikeCube.png');
-    game.load.image('upArrow', 'assets/upArrow.png');
-}
-function create()
-{
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    screen1 = game.add.sprite(0, 0, 'background');
-    screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
-    player = game.add.sprite(50, game.world.height - 300, 'triangle');
-    top1 = game.add.sprite(0, 0, 'ground');
-    top1.scale.setTo(game.world.width, 1);
-    ground = game.add.sprite(0, game.world.height - 32, 'ground');
-    ground.scale.setTo(game.world.width, 1);
-    cursors = game.input.keyboard.createCursorKeys();
-
-
-    player.enableBody = true;
-    game.physics.arcade.enable(player);
-    player.body.gravity.y = 300;
-
-    top1.enableBody = true;
-    game.physics.arcade.enable(top1);
-    top1.body.immovable = true;
-
-    ground.enableBody = true;
-    game.physics.arcade.enable(ground);
-    ground.body.immovable = true;
-
-
-    obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
-    obstacle.enableBody = true;
-    game.physics.arcade.enable(obstacle);
-    obstacle.body.velocity.x = -300;
-    //obstacle.inputEnabled = true;
-    //ground.inputEnabled = true;
-    screen1.inputEnabled = true;
-    player.body.gravity.y = 300;
-}
-function update()
-{
-    game.physics.arcade.collide(player, ground, touchingGroundChange);
-    game.physics.arcade.collide(player, top1);
-    //if(touchingGround === true && screen1.events.onInputDown){
-      //  player.body.velocity.y = -300;
-    //}
-    if(player.body.touching.down && game.input.activePointer.isDown){
-        player.body.velocity.y = -300;
+    {
+        game.load.image('background', 'assets/polygonScreen.png');
+        game.load.image('triangle', 'assets/TrianglePoly.png');
+        game.load.image('ground', 'assets/polyGround.png');
+        game.load.image('spikes', 'assets/spikeCube.png');
+        game.load.image('upArrow', 'assets/upArrow.png');
     }
 
+    function create()
+    {
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        screen1 = game.add.sprite(0, 0, 'background');
+        screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
+        screen1.inputEnabled = true;
+
+        player = game.add.sprite(50, game.world.height - 100, 'triangle');
+        player.enableBody = true;
+        game.physics.arcade.enable(player);
+        player.body.gravity.y = 400;
+
+        top1 = game.add.sprite(0, 0, 'ground');
+        top1.scale.setTo(game.world.width, 1);
+        top1.enableBody = true;
+        game.physics.arcade.enable(top1);
+        top1.body.immovable = true;
+
+        ground = game.add.sprite(0, game.world.height - 32, 'ground');
+        ground.scale.setTo(game.world.width, 1);
+        ground.enableBody = true;
+        game.physics.arcade.enable(ground);
+        ground.body.immovable = true;
+
+        obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+        obstacle.kill();
+        block = game.add.sprite(0, 0, 'ground');
+        block.kill();
+        //obstacle.enableBody = true;
+        //game.physics.arcade.enable(obstacle);
+        //obstacle.body.velocity.x = -300;
+        addThing();
+
+
+        this.timer = game.time.create(false);
+        this.timer.start();
+        playerLife = true;
+
+        layers = (game.world.height - 64) / 102;
+    }
+
+    function update()
+    {
+        game.physics.arcade.collide(player, ground);
+        game.physics.arcade.collide(player, top1);
+        game.physics.arcade.collide(player, obstacle, killPlayer);
+        game.physics.arcade.collide(player, block);
+
+        if(player.body.touching.down && game.input.activePointer.isDown){
+            player.body.velocity.y = -300;
+        }
+
+        score = this.timer.seconds;
+
+
+            if (obstacle !== null && obstacle.x <= 0) {
+                addThing();
+            } else if(block !== null && block.x <= 0 ) {
+                addThing();
+            }
+
+        else {
+                if (playerLife === false) {
+                    if (obstacle !== null) {
+                        obstacle.kill();
+                    }
+
+                    if (block !== null) {
+                        block.kill();
+                    }
+                }
+            }
+
+
+        if(player.body.velocity.y === 0 && player.y < game.world.height - 94){
+            player.body.velocity.x = 300;
+        }
+        else{
+            player.body.velocity.x = 0;
+        }
 }
 
 
