@@ -20,6 +20,33 @@
     var highScore;
     var playButton;
     var time = false;
+    var done = true;
+
+    function setup(){
+        //timer.minutes = 0;
+
+        playButton.kill();
+        playerLife = true;
+        player.visible = true;
+        player.x = 50;
+        player.y = game.world.height - 94;
+
+        timer.start();
+
+        scoreText.kill();
+        highText.kill();
+
+        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+
+        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+
+        addThing();
+
+        game.physics.arcade.collide(player, ground);
+
+        done = false;
+        done = true;
+    }
 
     function addThing() {
         time = true;
@@ -66,10 +93,10 @@
 
     function killPlayer()
     {
-
+        done = true;
         time = false;
 
-        player.kill();
+        player.visible = false;
         if(obstacle) {
             obstacle.kill();
         }
@@ -79,12 +106,12 @@
         playerLife = false;
         scoreText.kill();
         highText.kill();
-        //this.timer.stop();
+        timer.stop(false);
         scoreText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
         highText = game.add.text(game.world.centerX, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         playButton.inputEnabled = true;
-        playButton.events.onInputDown.add(create, this);
+        playButton.events.onInputDown.add(setup, this);
     }
 
     function preload()
@@ -100,21 +127,16 @@
 
     function create()
     {
-
-        if(time = false){
-            score = 0;
-            this.timer.seconds = 0;
-            this.timer.kill();
-        }
+        timer = game.time.create(false);
 
         time = true;
 
-        if(playButton){
+        /*if(playButton){
             playButton.kill();
-            if(this.timer) {
-                this.timer.destroy();
+            if(timer) {
+                timer.destroy();
             }
-        }
+        }*/
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         screen1 = game.add.sprite(0, 0, 'background');
@@ -154,9 +176,8 @@
         addThing();
 
 
-        this.timer = game.time.create(false);
-        this.timer.seconds = 0;
-        this.timer.start();
+        //this.timer.seconds = 0;
+        timer.start();
         playerLife = true;
 
         highScore = 0;
@@ -181,10 +202,10 @@
         }
 
         if(time === true) {
-            score = this.timer.seconds;
+            score = timer.seconds;
         }
         else{
-            this.timer.seconds = 0;
+            timer.seconds = 0;
         }
 
         scoreText.text = 'Score: ' + Math.round(score);
@@ -220,6 +241,14 @@
 
         if(score > highScore){
             highScore = score
+        }
+
+        if(timer.seconds < 0){
+            timer.seconds = 0;
+        }
+
+        if(playerLife === false && done === false){
+            score = 0;
         }
 
 }
