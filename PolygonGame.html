@@ -25,7 +25,7 @@
     function setPos()
     {
         player.y = game.world.height - 100;
-        player.body.gravity.y = 400;
+        player.body.gravity.y = 500;
         game.physics.arcade.collide(player, ground);
     }
 
@@ -54,7 +54,9 @@
         game.physics.arcade.collide(player, ground);
 
         done = false;
+        playerLife = false;
         done = true;
+        playerLife = true;
     }
 
     function addThing() {
@@ -155,7 +157,7 @@
         player = game.add.sprite(50, game.world.height - 100, 'triangle');
         player.enableBody = true;
         game.physics.arcade.enable(player);
-        player.body.gravity.y = 400;
+        player.body.gravity.y = 500;
 
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
@@ -272,9 +274,13 @@
             player.y = player.y - 10;
         }
 
-        if(playerLife === false && player.y !== game.world.height - 32){
+        if(playerLife === false){
             setPos();
         }
+
+        //if(score < 0){
+       //     score = 0;
+       // }
 
 }
 
