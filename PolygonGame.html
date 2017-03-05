@@ -22,6 +22,13 @@
     var time = false;
     var done = true;
 
+    function setPos()
+    {
+        player.y = game.world.height - 100;
+        player.body.gravity.y = 400;
+        game.physics.arcade.collide(player, ground);
+    }
+
     function setup(){
         //timer.minutes = 0;
 
@@ -29,7 +36,7 @@
         playerLife = true;
         player.visible = true;
         player.x = 50;
-        player.y = game.world.height - 94;
+        //player.y = game.world.height - 94;
 
         timer.start();
 
@@ -41,6 +48,8 @@
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
         addThing();
+
+        setPos();
 
         game.physics.arcade.collide(player, ground);
 
@@ -249,6 +258,22 @@
 
         if(playerLife === false && done === false){
             score = 0;
+        }
+
+        if(player.y > game.world.height - 94){
+            setPos();
+        }
+
+        if(player.visible === false){
+            player.y = game.world.height - 94;
+        }
+
+        if(player.y > game.world.height - 32){
+            player.y = player.y - 10;
+        }
+
+        if(playerLife === false && player.y !== game.world.height - 32){
+            setPos();
         }
 
 }
