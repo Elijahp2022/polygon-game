@@ -14,7 +14,6 @@
     var choice;
     var playerLife;
     var block;
-    var layers;
     var worldBounds;
     var scoreText;
     var highScore;
@@ -47,7 +46,7 @@
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
-        addThing();
+        addLayer1();
 
         setPos();
 
@@ -59,7 +58,7 @@
         playerLife = true;
     }
 
-    function addThing() {
+    function addLayer1() {
         time = true;
         if(makeObstacle === false) {
             choice = Math.random();
@@ -91,7 +90,7 @@
         } else if ( choice < 0.67) {
             //do nothing
             game.time.events.add(Phaser.Timer.SECOND * choice,
-                    addThing, this);
+                    addLayer1, this);
         } else if ( choice < 1.0) {
             block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
             block.scale.setTo(.25, 1);
@@ -184,7 +183,7 @@
         //obstacle.enableBody = true;
         //game.physics.arcade.enable(obstacle);
         //obstacle.body.velocity.x = -300;
-        addThing();
+        addLayer1();
 
 
         //this.timer.seconds = 0;
@@ -197,7 +196,7 @@
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
-        layers = (game.world.height - 64) / 102;
+
     }
 
     function update()
@@ -225,9 +224,9 @@
 
 
             if (obstacle !== null && obstacle.x <= - 72) {
-                addThing();
+                addLayer1();
             } else if(block !== null && block.x <= - 125 ) {
-                addThing();
+                addLayer1();
             }
 
         else {
@@ -276,6 +275,9 @@
 
         if(playerLife === false){
             setPos();
+        }
+        if(player.y > game.world.height - 32){
+            player.y = game.world.height - 100;
         }
 
         //if(score < 0){
