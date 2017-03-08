@@ -20,6 +20,9 @@
     var playButton;
     var time = false;
     var done = true;
+    var worldBoundsBottom;
+    var obstacle1;
+    var block1;
 
     function setPos()
     {
@@ -46,7 +49,10 @@
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
+        makeObstacle = true;
+
         addLayer1();
+
 
         setPos();
 
@@ -56,6 +62,7 @@
         playerLife = false;
         done = true;
         playerLife = true;
+        score = 0;
     }
 
     function addLayer1() {
@@ -89,8 +96,7 @@
             obstacle.body.velocity.x = -300;
         } else if ( choice < 0.67) {
             //do nothing
-            game.time.events.add(Phaser.Timer.SECOND * choice,
-                    addLayer1, this);
+            game.time.events.add(Phaser.Timer.SECOND * choice, addLayer1, this);
         } else if ( choice < 1.0) {
             block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
             block.scale.setTo(.25, 1);
@@ -100,6 +106,8 @@
             block.body.velocity.x = -300
         }
     }
+
+
 
     function killPlayer()
     {
@@ -157,6 +165,7 @@
         player.enableBody = true;
         game.physics.arcade.enable(player);
         player.body.gravity.y = 500;
+        //player.anchor.setTo(1, 1);
 
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
@@ -169,6 +178,14 @@
         worldBounds.enableBody = true;
         game.physics.arcade.enable(worldBounds);
         worldBounds.body.immovable = true;
+
+        worldBoundsBottom = game.add.sprite(0, game.world.height - 32, 'worldBounds');
+        worldBoundsBottom.angle = 90;
+        worldBoundsBottom.scale.setTo(game.world.width, 1);
+        worldBoundsBottom.enableBody = true;
+        game.physics.arcade.enable(worldBoundsBottom);
+        worldBoundsBottom.immovable = true;
+
 
         ground = game.add.sprite(0, game.world.height - 32, 'ground');
         ground.scale.setTo(game.world.width, 1);
@@ -184,7 +201,6 @@
         //game.physics.arcade.enable(obstacle);
         //obstacle.body.velocity.x = -300;
         addLayer1();
-
 
         //this.timer.seconds = 0;
         timer.start();
@@ -206,6 +222,7 @@
         game.physics.arcade.collide(player, obstacle, killPlayer);
         game.physics.arcade.collide(player, block);
         game.physics.arcade.collide(player, worldBounds, killPlayer);
+        game.physics.arcade.overlap(player, worldBoundsBottom, setPos);
 
         if(player.body.touching.down && game.input.activePointer.isDown){
             player.body.velocity.y = -300;
@@ -261,7 +278,7 @@
             score = 0;
         }
 
-        if(player.y > game.world.height - 94){
+        if(player.y > game.world.height - 33){
             setPos();
         }
 
@@ -269,20 +286,18 @@
             player.y = game.world.height - 94;
         }
 
-        if(player.y > game.world.height - 32){
-            player.y = player.y - 10;
-        }
-
         if(playerLife === false){
             setPos();
         }
-        if(player.y > game.world.height - 32){
+        if(player.y > game.world.height - 33){
             player.y = game.world.height - 100;
         }
 
-        //if(score < 0){
-       //     score = 0;
-       // }
+
+
+        if(player.y > game.world.height - 33){
+            console.log("player is below ground");
+        }
 
 }
 
