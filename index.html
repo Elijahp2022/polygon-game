@@ -1,0 +1,329 @@
+<html>
+<body>
+<script src="phaser.min.js"></script>
+<script>
+    game = new Phaser.Game(document.body.offsetWidth, document.body.offsetHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update});
+    var screen1;
+    var top1;
+    var ground;
+    var player;
+    var obstacle;
+    var makeObstacle = true;
+    var timer;
+    var score = 0;
+    var choice;
+    var playerLife;
+    var block;
+    var worldBounds;
+    var scoreText;
+    var highScore;
+    var playButton;
+    var time = false;
+    var done = true;
+    var worldBoundsBottom;
+    var obstacle1;
+    var block1;
+    var speed;
+
+    function setPos()
+    {
+        player.y = game.world.height - 100;
+        player.body.gravity.y = 500;
+    }
+
+    function setup(){
+        //timer.minutes = 0;
+
+        playButton.kill();
+        playerLife = true;
+        player.visible = true;
+        player.x = 50;
+        //player.y = game.world.height - 94;
+
+        timer.start();
+
+        scoreText.kill();
+        highText.kill();
+
+        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+
+        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+
+        makeObstacle = true;
+
+        score = 222;
+
+        addLayer1();
+
+
+        setPos();
+
+        game.physics.arcade.collide(player, ground);
+
+        done = false;
+        playerLife = false;
+        done = true;
+        playerLife = true;
+    }
+
+    function addLayer1() {
+        time = true;
+        if(makeObstacle === false) {
+            choice = Math.random();
+            console.log(choice);
+        }
+        else if(makeObstacle === true) {
+            choice = 0.32;
+            makeObstacle = false;
+        }
+
+        if(obstacle) {
+            obstacle.kill();
+        }
+
+        if(block) {
+            block.kill();
+        }
+
+        block = null;
+        obstacle = null;
+
+
+
+        if (choice < 0.34) {
+            obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+            obstacle.enableBody = true;
+            game.physics.arcade.enable(obstacle);
+            obstacle.body.velocity.x = 0;
+        } else if ( choice < 0.67) {
+            //do nothing
+            game.time.events.add(Phaser.Timer.SECOND * choice, addLayer1, this);
+        } else if ( choice < 1.0) {
+            block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
+            block.scale.setTo(.25, 1);
+            block.enableBody = true;
+            game.physics.arcade.enable(block);
+            block.body.immovable = true;
+            block.body.velocity.x = 0;
+        }
+    }
+
+
+
+    function killPlayer()
+    {
+        done = true;
+        time = false;
+
+        player.visible = false;
+        if(obstacle) {
+            obstacle.kill();
+        }
+        if(block){
+            block.kill();
+        }
+        playerLife = false;
+        scoreText.kill();
+        highText.kill();
+        timer.stop(false);
+        scoreText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
+        highText = game.add.text(game.world.centerX, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
+        playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
+        //playButton.scale.setTo(game.world.width / 6.65, 1);
+        playButton.width = game.world.width / 6.65;
+        playButton.height = playButton.width + 119;
+        playButton.inputEnabled = true;
+        playButton.events.onInputDown.add(setup, this);
+    }
+
+    function preload()
+    {
+        game.load.image('background', 'assets/polygonScreen.png');
+        game.load.image('triangle', 'assets/TrianglePoly.png');
+        game.load.image('ground', 'assets/polyGround.png');
+        game.load.image('spikes', 'assets/spikeCube.png');
+        game.load.image('upArrow', 'assets/upArrow.png');
+        game.load.image('worldBounds', 'assets/worldBounds.png');
+        game.load.image('play', 'assets/playButton.png');
+    }
+
+    function create()
+    {
+        timer = game.time.create(false);
+
+        time = true;
+
+        /*if(playButton){
+            playButton.kill();
+            if(timer) {
+                timer.destroy();
+            }
+        }*/
+
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        screen1 = game.add.sprite(0, 0, 'background');
+        screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
+        screen1.inputEnabled = true;
+
+        player = game.add.sprite(50, game.world.height - 100, 'triangle');
+        player.width = game.world.width / 20;
+        player.height = player.width - 10;
+        player.enableBody = true;
+        game.physics.arcade.enable(player);
+        player.body.gravity.y = 500;
+        //player.anchor.setTo(1, 1);
+
+        top1 = game.add.sprite(0, 0, 'ground');
+        top1.scale.setTo(game.world.width, 1);
+        top1.height = game.world.height / 25.44;
+        top1.enableBody = true;
+        game.physics.arcade.enable(top1);
+        top1.body.immovable = true;
+
+        worldBounds = game.add.sprite(-32, 0, 'worldBounds');
+        worldBounds.scale.setTo(1, game.world.height);
+        worldBounds.enableBody = true;
+        game.physics.arcade.enable(worldBounds);
+        worldBounds.body.immovable = true;
+
+        worldBoundsBottom = game.add.sprite(0, game.world.height - 32, 'worldBounds');
+        worldBoundsBottom.angle = 90;
+        worldBoundsBottom.scale.setTo(game.world.width, 1);
+        worldBoundsBottom.enableBody = true;
+        game.physics.arcade.enable(worldBoundsBottom);
+        worldBoundsBottom.immovable = true;
+
+
+        ground = game.add.sprite(0, game.world.height - 32, 'ground');
+        ground.scale.setTo(game.world.width, 1);
+        ground.height = game.world.height / 25.44;
+        ground.enableBody = true;
+        game.physics.arcade.enable(ground);
+        ground.body.immovable = true;
+
+        obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+        obstacle.kill();
+        block = game.add.sprite(0, 0, 'ground');
+        block.kill();
+        //obstacle.enableBody = true;
+        //game.physics.arcade.enable(obstacle);
+        //obstacle.body.velocity.x = -300;
+        addLayer1();
+
+        //this.timer.seconds = 0;
+        timer.start();
+        playerLife = true;
+
+        highScore = 0;
+
+        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+
+        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+
+
+    }
+
+    function update()
+    {
+        game.physics.arcade.collide(player, ground);
+        game.physics.arcade.collide(player, top1);
+        game.physics.arcade.collide(player, obstacle, killPlayer);
+        game.physics.arcade.collide(player, block);
+        game.physics.arcade.collide(player, worldBounds, killPlayer);
+        game.physics.arcade.overlap(player, worldBoundsBottom, setPos);
+
+        speed = score * 100;
+
+        if(player.body.touching.down && game.input.activePointer.isDown){
+            player.body.velocity.y = - 300;
+        }
+
+        if(time === true) {
+            score = timer.seconds;
+        }
+        else{
+            timer.seconds = 0;
+        }
+
+        scoreText.text = 'Score: ' + Math.round(score);
+
+        highText.text = 'High Score: ' + Math.round(highScore);
+
+
+            if (obstacle !== null && obstacle.x <= - 72) {
+                addLayer1();
+            } else if(block !== null && block.x <= - 125 ) {
+                addLayer1();
+            }
+
+        else {
+                if (playerLife === false) {
+                    if (obstacle !== null) {
+                        obstacle.kill();
+                    }
+
+                    if (block !== null) {
+                        block.kill();
+                    }
+                }
+            }
+
+
+        if(player.body.velocity.y === 0 && player.y < game.world.height - 94 && block){
+            player.body.velocity.x = block.body.velocity.x - block.body.velocity.x - block.body.velocity.x;
+        }
+        else{
+            player.body.velocity.x = 0;
+        }
+
+        if(score > highScore){
+            highScore = score
+        }
+
+        if(timer.seconds < 0){
+            timer.seconds = 0;
+        }
+
+        if(playerLife === false && done === false){
+            score = 0;
+        }
+
+        if(player.y > game.world.height - 33){
+            setPos();
+        }
+
+        if(player.visible === false){
+            player.y = game.world.height - 94;
+        }
+
+        if(playerLife === false){
+            setPos();
+        }
+        if(player.y > game.world.height - 33){
+            player.y = game.world.height - 100;
+        }
+
+
+
+        if(player.y > game.world.height - 33){
+            console.log("player is below ground");
+        }
+
+        if(obstacle){
+            obstacle.body.velocity.x = 0 - (score * 8 + 300);
+            obstacle.width = game.world.width / 28.24;
+            obstacle.height = obstacle.width + 0;
+        }
+
+        if(block){
+            block.body.velocity.x = 0 - (score * 8 + 300);
+            block.height = game.world.height / 25.44;
+            block.width = block.height + 93;
+        }
+
+}
+
+
+</script>
+</body>
+</html>
