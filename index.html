@@ -24,15 +24,19 @@
     var obstacle1;
     var block1;
     var speed;
+    var reset = false;
 
     function setPos()
     {
-        player.y = game.world.height - 100;
+        player.y = game.world.height - ground.height - player.height;
         player.body.gravity.y = 500;
     }
 
     function setup(){
         //timer.minutes = 0;
+        reset = true;
+
+        timer = game.time.create(false);
 
         playButton.kill();
         playerLife = true;
@@ -50,8 +54,6 @@
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
         makeObstacle = true;
-
-        score = 222;
 
         addLayer1();
 
@@ -125,15 +127,16 @@
         playerLife = false;
         scoreText.kill();
         highText.kill();
-        timer.stop(false);
+        timer.stop(true);
         scoreText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
         highText = game.add.text(game.world.centerX, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         //playButton.scale.setTo(game.world.width / 6.65, 1);
         playButton.width = game.world.width / 6.65;
-        playButton.height = playButton.width + 119;
+        playButton.height = playButton.width - 119;
         playButton.inputEnabled = true;
         playButton.events.onInputDown.add(setup, this);
+        timer.destroy();
     }
 
     function preload()
@@ -149,6 +152,8 @@
 
     function create()
     {
+        console.log(game.world.width);
+
         timer = game.time.create(false);
 
         time = true;
@@ -175,7 +180,7 @@
 
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
-        top1.height = game.world.height / 25.44;
+        top1.height = game.world.width / 44.5;
         top1.enableBody = true;
         game.physics.arcade.enable(top1);
         top1.body.immovable = true;
@@ -196,7 +201,7 @@
 
         ground = game.add.sprite(0, game.world.height - 32, 'ground');
         ground.scale.setTo(game.world.width, 1);
-        ground.height = game.world.height / 25.44;
+        ground.height = game.world.width / 44.5;
         ground.enableBody = true;
         game.physics.arcade.enable(ground);
         ground.body.immovable = true;
@@ -225,6 +230,9 @@
 
     function update()
     {
+
+        ground.y = game.world.height - ground.height;
+
         game.physics.arcade.collide(player, ground);
         game.physics.arcade.collide(player, top1);
         game.physics.arcade.collide(player, obstacle, killPlayer);
@@ -238,8 +246,11 @@
             player.body.velocity.y = - 300;
         }
 
-        if(time === true) {
+        if(time === true /*&& timer.seconds > 0 || timer.seconds === 0*/) {
             score = timer.seconds;
+        }
+        if(timer.seconds < 0){
+            timer.seconds = 0;
         }
         else{
             timer.seconds = 0;
@@ -282,31 +293,21 @@
 
         if(timer.seconds < 0){
             timer.seconds = 0;
+            score = 0;
         }
 
         if(playerLife === false && done === false){
             score = 0;
         }
 
-        if(player.y > game.world.height - 33){
-            setPos();
-        }
+       // if(player.y > game.world.height - ground.height){
+         //   setPos();
+           // player.y = game.world.height - 100;
+           // console.log("player is below ground");
+        //}
 
         if(player.visible === false){
             player.y = game.world.height - 94;
-        }
-
-        if(playerLife === false){
-            setPos();
-        }
-        if(player.y > game.world.height - 33){
-            player.y = game.world.height - 100;
-        }
-
-
-
-        if(player.y > game.world.height - 33){
-            console.log("player is below ground");
         }
 
         if(obstacle){
@@ -317,10 +318,18 @@
 
         if(block){
             block.body.velocity.x = 0 - (score * 8 + 300);
-            block.height = game.world.height / 25.44;
-            block.width = block.height + 93;
+            block.width = game.world.width / 11.392;
         }
 
+        /*if(reset === true){
+            score = 0;
+            timer.seconds = 0;
+            reset = false;
+        }*/
+
+        if(timer.seconds < 33){
+             timer.seconds = 0;
+        }
 }
 
 
