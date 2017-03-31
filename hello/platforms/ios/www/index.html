@@ -24,15 +24,19 @@
     var obstacle1;
     var block1;
     var speed;
+    var reset = false;
 
     function setPos()
     {
-        player.y = game.world.height - 100;
+        player.y = game.world.height - ground.height - player.height;
         player.body.gravity.y = 500;
     }
 
     function setup(){
         //timer.minutes = 0;
+        reset = true;
+
+        timer = game.time.create(false);
 
         playButton.kill();
         playerLife = true;
@@ -45,13 +49,11 @@
         scoreText.kill();
         highText.kill();
 
-        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+        scoreText = game.add.text(game.world.centerX - scoreText.width / 2, 50, 'Score: ' + 0);
 
-        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+        highText = game.add.text(game.world.centerX - highText.width / 2, 100, 'High Score: ' + highScore);
 
         makeObstacle = true;
-
-        score = 222;
 
         addLayer1();
 
@@ -91,7 +93,7 @@
 
 
         if (choice < 0.34) {
-            obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+            obstacle = game.add.sprite(game.world.width - 61, game.world.height - game.world.width / 15.1489, 'spikes');
             obstacle.enableBody = true;
             game.physics.arcade.enable(obstacle);
             obstacle.body.velocity.x = 0;
@@ -99,7 +101,7 @@
             //do nothing
             game.time.events.add(Phaser.Timer.SECOND * choice, addLayer1, this);
         } else if ( choice < 1.0) {
-            block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
+            block = game.add.sprite(game.world.width - 61, game.world.height - game.world.width / 15.1489, 'ground');
             block.scale.setTo(.25, 1);
             block.enableBody = true;
             game.physics.arcade.enable(block);
@@ -125,12 +127,16 @@
         playerLife = false;
         scoreText.kill();
         highText.kill();
-        timer.stop(false);
-        scoreText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
-        highText = game.add.text(game.world.centerX, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
+        timer.stop(true);
+        scoreText = game.add.text(game.world.centerX - scoreText.width / 2, game.world.centerY, 'Score: ' + Math.round(score));
+        highText = game.add.text(game.world.centerX - highText.width / 2, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
+        //playButton.scale.setTo(game.world.width / 6.65, 1);
+        playButton.width = game.world.width / 6.65;
+        playButton.height = game.world.width / 14.9894;
         playButton.inputEnabled = true;
         playButton.events.onInputDown.add(setup, this);
+        timer.destroy();
     }
 
     function preload()
@@ -146,6 +152,8 @@
 
     function create()
     {
+        console.log(game.world.width);
+
         timer = game.time.create(false);
 
         time = true;
@@ -163,13 +171,15 @@
         screen1.inputEnabled = true;
 
         player = game.add.sprite(50, game.world.height - 100, 'triangle');
+        player.width = game.world.width / 20;
+        player.height = player.width - 10;
         player.enableBody = true;
         game.physics.arcade.enable(player);
         player.body.gravity.y = 500;
-        //player.anchor.setTo(1, 1);
 
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
+        top1.height = game.world.width / 44.5;
         top1.enableBody = true;
         game.physics.arcade.enable(top1);
         top1.body.immovable = true;
@@ -190,6 +200,7 @@
 
         ground = game.add.sprite(0, game.world.height - 32, 'ground');
         ground.scale.setTo(game.world.width, 1);
+        ground.height = game.world.width / 44.5;
         ground.enableBody = true;
         game.physics.arcade.enable(ground);
         ground.body.immovable = true;
@@ -213,11 +224,18 @@
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
-
+        scoreText.x = game.world.centerX - scoreText.width / 2;
+        highText.x = game.world.centerX - highText.width / 2;
     }
 
     function update()
     {
+        if(playButton){
+            playButton.x = game.world.centerX - playButton.width / 2;
+        }
+
+        ground.y = game.world.height - ground.height;
+
         game.physics.arcade.collide(player, ground);
         game.physics.arcade.collide(player, top1);
         game.physics.arcade.collide(player, obstacle, killPlayer);
@@ -228,11 +246,14 @@
         speed = score * 100;
 
         if(player.body.touching.down && game.input.activePointer.isDown){
-            player.body.velocity.y = - 300;
+            player.body.velocity.y = - 200;
         }
 
-        if(time === true) {
+        if(time === true /*&& timer.seconds > 0 || timer.seconds === 0*/) {
             score = timer.seconds;
+        }
+        if(timer.seconds < 0){
+            timer.seconds = 0;
         }
         else{
             timer.seconds = 0;
@@ -262,7 +283,7 @@
             }
 
 
-        if(player.body.velocity.y === 0 && player.y < game.world.height - 94 && block){
+        if(player.body.velocity.y === 0 && player.y < game.world.height - ground.height * 2.93 && block){
             player.body.velocity.x = block.body.velocity.x - block.body.velocity.x - block.body.velocity.x;
         }
         else{
@@ -273,43 +294,43 @@
             highScore = score
         }
 
-        if(timer.seconds < 0){
-            timer.seconds = 0;
-        }
-
         if(playerLife === false && done === false){
             score = 0;
         }
 
-        if(player.y > game.world.height - 33){
-            setPos();
-        }
+       // if(player.y > game.world.height - ground.height){
+         //   setPos();
+           // player.y = game.world.height - 100;
+           // console.log("player is below ground");
+        //}
 
         if(player.visible === false){
             player.y = game.world.height - 94;
         }
 
-        if(playerLife === false){
-            setPos();
-        }
-        if(player.y > game.world.height - 33){
-            player.y = game.world.height - 100;
-        }
-
-
-
-        if(player.y > game.world.height - 33){
-            console.log("player is below ground");
-        }
-
         if(obstacle){
             obstacle.body.velocity.x = 0 - (score * 8 + 300);
+            obstacle.width = game.world.width / 28.24;
+            obstacle.height = obstacle.width + 0;
         }
 
         if(block){
             block.body.velocity.x = 0 - (score * 8 + 300);
+            block.width = game.world.width / 11.392;
+            block.height = game.world.width / 44.5;
         }
 
+        /*if(reset === true){
+            score = 0;
+            timer.seconds = 0;
+            reset = false;
+        }*/
+
+        if(timer.seconds < 33){
+             timer.seconds = 0;
+        }
+
+        worldBoundsBottom.y = game.world.height - ground.height;
 }
 
 
