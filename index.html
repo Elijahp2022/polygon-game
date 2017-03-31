@@ -49,9 +49,9 @@
         scoreText.kill();
         highText.kill();
 
-        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+        scoreText = game.add.text(game.world.centerX - scoreText.width / 2, 50, 'Score: ' + 0);
 
-        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+        highText = game.add.text(game.world.centerX - highText.width / 2, 100, 'High Score: ' + highScore);
 
         makeObstacle = true;
 
@@ -128,8 +128,8 @@
         scoreText.kill();
         highText.kill();
         timer.stop(true);
-        scoreText = game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + Math.round(score));
-        highText = game.add.text(game.world.centerX, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
+        scoreText = game.add.text(game.world.centerX - scoreText.width / 2, game.world.centerY, 'Score: ' + Math.round(score));
+        highText = game.add.text(game.world.centerX - highText.width / 2, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         //playButton.scale.setTo(game.world.width / 6.65, 1);
         playButton.width = game.world.width / 6.65;
@@ -224,11 +224,15 @@
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
 
-
+        scoreText.x = game.world.centerX - scoreText.width / 2;
+        highText.x = game.world.centerX - highText.width / 2;
     }
 
     function update()
     {
+        if(playButton){
+            playButton.x = game.world.centerX - playButton.width / 2;
+        }
 
         ground.y = game.world.height - ground.height;
 
@@ -242,7 +246,7 @@
         speed = score * 100;
 
         if(player.body.touching.down && game.input.activePointer.isDown){
-            player.body.velocity.y = - 300;
+            player.body.velocity.y = - 200;
         }
 
         if(time === true /*&& timer.seconds > 0 || timer.seconds === 0*/) {
