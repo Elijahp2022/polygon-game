@@ -93,7 +93,7 @@
 
 
         if (choice < 0.34) {
-            obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+            obstacle = game.add.sprite(game.world.width - 61, game.world.height - game.world.width / 15.1489, 'spikes');
             obstacle.enableBody = true;
             game.physics.arcade.enable(obstacle);
             obstacle.body.velocity.x = 0;
@@ -101,7 +101,7 @@
             //do nothing
             game.time.events.add(Phaser.Timer.SECOND * choice, addLayer1, this);
         } else if ( choice < 1.0) {
-            block = game.add.sprite(game.world.width - 61, game.world.height - 94, 'ground');
+            block = game.add.sprite(game.world.width - 61, game.world.height - game.world.width / 15.1489, 'ground');
             block.scale.setTo(.25, 1);
             block.enableBody = true;
             game.physics.arcade.enable(block);
@@ -133,7 +133,7 @@
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         //playButton.scale.setTo(game.world.width / 6.65, 1);
         playButton.width = game.world.width / 6.65;
-        playButton.height = playButton.width - 119;
+        playButton.height = game.world.width / 14.9894;
         playButton.inputEnabled = true;
         playButton.events.onInputDown.add(setup, this);
         timer.destroy();
@@ -313,6 +313,7 @@
         if(block){
             block.body.velocity.x = 0 - (score * 8 + 300);
             block.width = game.world.width / 11.392;
+            block.height = game.world.width / 44.5;
         }
 
         /*if(reset === true){
