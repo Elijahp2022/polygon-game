@@ -25,15 +25,21 @@
     var block1;
     var speed;
     var reset = false;
+    var small = false;
+    var small1 = false;
+    var small2 = false;
+    var jump = 0;
+    var stop = false;
+    var Htemplate;
 
     function setPos()
     {
         player.y = game.world.height - ground.height - player.height;
-        player.body.gravity.y = 500;
     }
 
     function setup(){
         //timer.minutes = 0;
+
         reset = true;
 
         timer = game.time.create(false);
@@ -69,10 +75,11 @@
     }
 
     function addLayer1() {
+
         time = true;
         if(makeObstacle === false) {
             choice = Math.random();
-            console.log(choice);
+           // console.log(choice);
         }
         else if(makeObstacle === true) {
             choice = 0.32;
@@ -108,6 +115,9 @@
             block.body.immovable = true;
             block.body.velocity.x = 0;
         }
+        if(small1 === true){
+            small = true;
+        }
     }
 
 
@@ -116,6 +126,7 @@
     {
         done = true;
         time = false;
+        stop = true;
 
         player.visible = false;
         if(obstacle) {
@@ -152,8 +163,6 @@
 
     function create()
     {
-        console.log(game.world.width);
-
         timer = game.time.create(false);
 
         time = true;
@@ -175,7 +184,11 @@
         player.height = player.width - 10;
         player.enableBody = true;
         game.physics.arcade.enable(player);
-        player.body.gravity.y = 500;
+        if(player.height < 30){
+            small = true;
+            small1 = true;
+            small2 = true;
+        }
 
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
@@ -248,7 +261,12 @@
         speed = score * 100;
 
         if(player.body.touching.down && game.input.activePointer.isDown){
-            player.body.velocity.y = - game.world.width / 15.1489 - 200;
+            if(small1 === false && obstacle ){
+                    jump = obstacle.y / 2;
+            }
+            if(timer.seconds > 0.25) {
+                player.body.velocity.y = -jump;
+            }
         }
 
         if(time === true /*&& timer.seconds > 0 || timer.seconds === 0*/) {
@@ -307,16 +325,16 @@
         //}
 
         if(player.visible === false){
-            player.y = game.world.height - 94;
+            setPos();
         }
 
-        if(obstacle){
+        if(obstacle && small1 === false){
             obstacle.body.velocity.x = 0 - (score * 8 + 300);
             obstacle.width = game.world.width / 28.24;
             obstacle.height = obstacle.width + 0;
         }
 
-        if(block){
+        if(block && small1 === false){
             block.body.velocity.x = 0 - (score * 8 + 300);
             block.width = game.world.width / 11.392;
             block.height = game.world.width / 44.5;
@@ -333,6 +351,64 @@
         }
 
         worldBoundsBottom.y = game.world.height - ground.height;
+
+        if(small === true){
+            small = false;
+            if(small2 === true) {
+                player.width = player.width + player.width;
+                player.height = player.height + player.height/2;
+            }
+
+           if(obstacle) {
+               obstacle.width = obstacle.width - obstacle.width/4;
+               obstacle.height = obstacle.height - obstacle.height/4;
+               obstacle.y = obstacle.y - obstacle.height;
+               obstacle.body.velocity.x = 0 - (score * 8 + 300);
+               jump = obstacle.y/3 + player.height / 4 + 20;
+           }
+
+           if(block){
+               block.width = block.width + block.width/2;
+               block.height = block.height + block.height/2;
+               block.y = block.y + block.y;
+               block.body.velocity.x = 0 - (score * 8 + 300);
+           }
+
+           if(small2 === true) {
+               small2 = false;
+               ground.height = ground.height + ground.height/2;
+               top.height = top.height + top.height/2;
+           }
+        }
+
+        //if(small === false){
+          //  jump = obstacle.y/2;
+        //}
+        if(player.y - player.height > ground.y || player.y - player.height === ground.y){
+            setPos();
+        }
+
+
+        if(player.body.touching.down || player.y - player.height > ground.y){
+            down = true;
+        }
+        if(!player.body.touching.down || player.y - player.height < ground.y){
+
+            down = false;
+        }
+
+        if(down === true){
+            setPos();
+        }
+
+        if(player.body.velocity.y > 0 && player.y === game.world.height - player.height - ground.height){
+            setPos();
+            player.y = game.world.height - ground.height - player.height - player.height / 3;
+        }
+        if(obstacle) {
+            Htemplate = game.world.height + game.world.height / 9.69047619048;
+        }
+            player.body.gravity.y = Htemplate;
 }
 
 
