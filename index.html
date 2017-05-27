@@ -403,7 +403,7 @@
 
         if(obstacle && small1 === false){
             if(firstTime === false) {
-                obstacle.body.velocity.x = 0 - (score * 8 + 300);
+                obstacle.body.velocity.x = 0 - (score * 8 + game.world.width / 3);
                 obstacle.width = game.world.width / 28.24;
                 obstacle.height = obstacle.width + 0;
             }
@@ -411,7 +411,7 @@
 
         if(block && small1 === false){
             if(firstTime === false) {
-                block.body.velocity.x = 0 - (score * 8 + 300);
+                block.body.velocity.x = 0 - (score * 8 + game.world.width / 3);
                 block.width = game.world.width / 11.392;
                 block.height = game.world.width / 44.5;
             }
