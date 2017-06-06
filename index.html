@@ -35,6 +35,81 @@
     var firstTime = false;
     var welcomeText;
     var posReset;
+    var pause;
+    var pauseSwitch = false;
+    var pauseMenu;
+    var returnToHomeButton;
+    var resumeButton;
+    var Hy1;
+    var Hy2;
+    var Hx1;
+    var Hx2;
+    var Ry1;
+    var Ry2;
+    var Rx1;
+    var Rx2;
+
+    function resume(){
+        game.paused = false;
+        pauseSwitch = false;
+        returnToHomeButton.kill();
+        resumeButton.kill();
+        pauseMenu.kill();
+
+        pause = game.add.sprite(game.world.width - 169, 50, 'pause');
+        pause.width = game.world.width/28.48;
+        pause.height = pause.width;
+        pause.x = game.world.width - (pause.width + pause.width / 2);
+        if(pauseSwitch === false) {
+            pause.inputEnabled = true;
+            pauseSwitch = true;
+        }
+    }
+
+    function unpause(event){
+        if(game.paused) {
+            Ry1 = resumeButton.y;
+            Ry2 = resumeButton.y + resumeButton.height;
+            Rx1 = resumeButton.x;
+            Rx2 = resumeButton.x + resumeButton.width;
+
+            Hy1 = returnToHomeButton.y;
+            Hy2 = returnToHomeButton.y + returnToHomeButton.height;
+            Hx1 = returnToHomeButton.x;
+            Hx2 = returnToHomeButton.x + returnToHomeButton.width;
+
+            if (event.x > Hx1 && event.x < Hx2 && event.y > Hy1 && event.y < Hy2) {
+                console.log("return to home screen");
+                game.paused = false;
+                create();
+            }
+
+            if(event.x > Rx1 && event.x < Rx2 && event.y > Ry1 && event.y < Ry2){
+                console.log("resume");
+                resume();
+            }
+        }
+    }
+
+    function pauseGame(){
+            game.paused = true;
+        pauseMenu = game.add.sprite(0, 0, 'menu');
+        pauseMenu.x = game.world.centerX - pauseMenu.width / 2;
+        pauseMenu.y = game.world.centerY - pauseMenu.height / 2;
+        returnToHomeButton = game.add.sprite(0, 0, 'returnToHome');
+        returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
+        returnToHomeButton.y = returnToHomeButton.height * 2;
+        resumeButton = game.add.sprite(0, 0, 'play');
+        resumeButton.x = game.world.centerX - resumeButton.width / 2;
+        resumeButton.y = game.world.height - resumeButton.height * 3;
+        pause.kill();
+        pauseMenu.width = game.world.width/3.010570824524313;
+        pauseMenu.height = pauseMenu.width + 190;
+        returnToHomeButton.width = game.world.width / 5.498069498069498;
+        returnToHomeButton.height = returnToHomeButton.width - 161;
+        resumeButton.width = game.world.width / 6.532110091743119;
+        resumeButton.height = resumeButton.width - 119;
+    }
 
     function setPos()
     {
@@ -46,6 +121,7 @@
     }
 
     function setup(){
+        pauseSwitch = false;
         firstTime = false;
         setPos();
         player.visible = true;
@@ -80,10 +156,19 @@
         }
 
         scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
-        scoreText.X = game.world.centerX - scoreText.width / 2;
+        scoreText.x = game.world.centerX - scoreText.width / 2;
 
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
-        highText.X = game.world.centerX - highText.width / 2;
+        highText.x = game.world.centerX - highText.width / 2;
+
+        pause = game.add.sprite(game.world.width - 169, 50, 'pause');
+        pause.width = game.world.width/28.48;
+        pause.height = pause.width;
+        pause.x = game.world.width - (pause.width + pause.width / 2);
+        if(pauseSwitch === false) {
+            pause.inputEnabled = true;
+            pauseSwitch = true;
+        }
 
         makeObstacle = true;
 
@@ -188,6 +273,7 @@
             if(timer) {
                 timer.destroy();
             }
+            pause.kill();
     }
 
     function preload()
@@ -199,9 +285,13 @@
         game.load.image('upArrow', 'assets/upArrow.png');
         game.load.image('worldBounds', 'assets/worldBounds.png');
         game.load.image('play', 'assets/playButton.png');
+        game.load.image('pause', 'assets/pause.png');
+        game.load.image('menu', 'assets/pauseMenuBackgroun.png');
+        game.load.image('returnToHome', 'assets/return_to_home_screen.png');
+        game.load.image('resume', 'assets/playButton.png');
     }
 
-    function create()
+      function create()
     {
 
         firstTime = true;
@@ -300,8 +390,8 @@
         //welcomeText.text.x = game.world.centerX + welcomeText.length/2;
         //welcomeText.text.y = game.world.centerY + welcomeText.height/2;
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
-        playButton.width = game.world.width / 6.65;
-        playButton.height = game.world.width / 14.9894;
+        playButton.width = game.world.width / 6.532110091743119;
+        playButton.height = playButton.width - 119;
         playButton.inputEnabled = true;
         playButton.events.onInputDown.add(setup, this);
     }
@@ -508,6 +598,28 @@
         if(firstTime === true){
             player.y = game.world.height - ground.height - player.height;
         }
+        if(pauseSwitch === true) {
+            if(game.paused === false) {
+                pause.events.onInputDown.add(pauseGame, this);
+            }
+        }
+        if(game.paused === true){
+
+        }
+        game.input.onDown.add(unpause, self);
+        if(pauseMenu){
+            pauseMenu.width = game.world.width/3.010570824524313;
+            pauseMenu.height = pauseMenu.width + 190;
+        }
+        if(returnToHomeButton){
+            returnToHomeButton.width = game.world.width / 5.498069498069498;
+            returnToHomeButton.height = returnToHomeButton.width - 161;
+        }
+        if(resumeButton){
+            resumeButton.width = game.world.width / 6.532110091743119;
+            resumeButton.height = resumeButton.width - 119;
+        }
+
     }
 
 
