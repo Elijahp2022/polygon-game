@@ -94,21 +94,31 @@
     function pauseGame(){
             game.paused = true;
         pauseMenu = game.add.sprite(0, 0, 'menu');
+        pauseMenu.width = game.world.width/3.010570824524313;
+        pauseMenu.height = pauseMenu.width + 190;
         pauseMenu.x = game.world.centerX - pauseMenu.width / 2;
         pauseMenu.y = game.world.centerY - pauseMenu.height / 2;
         returnToHomeButton = game.add.sprite(0, 0, 'returnToHome');
-        returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
-        returnToHomeButton.y = returnToHomeButton.height * 2;
-        resumeButton = game.add.sprite(0, 0, 'play');
-        resumeButton.x = game.world.centerX - resumeButton.width / 2;
-        resumeButton.y = game.world.height - resumeButton.height * 3;
-        pause.kill();
-        pauseMenu.width = game.world.width/3.010570824524313;
-        pauseMenu.height = pauseMenu.width + 190;
         returnToHomeButton.width = game.world.width / 5.498069498069498;
         returnToHomeButton.height = returnToHomeButton.width - 161;
+        returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
+        if(small1 === false) {
+            returnToHomeButton.y = returnToHomeButton.height * 2;
+        }
+        if(small1 === true){
+            returnToHomeButton.y = game.world.centerY + returnToHomeButton.height * 2;
+        }
+        resumeButton = game.add.sprite(0, 0, 'play');
         resumeButton.width = game.world.width / 6.532110091743119;
         resumeButton.height = resumeButton.width - 119;
+        resumeButton.x = game.world.centerX - resumeButton.width / 2;
+        if(small1 === false) {
+            resumeButton.y = game.world.height - resumeButton.height * 3;
+        }
+        if(small1 === true){
+            resumeButton.y = game.world.centerY - resumeButton.height * 7;
+        }
+        pause.kill();
     }
 
     function setPos()
@@ -546,6 +556,16 @@
                }
            }
 
+           if(pauseMenu){
+               pauseMenu.width = pauseMenu.width + pauseMenu.width / 2;
+               pauseMenu.height = pauseMenu.height + pauseMenu.height / 2;
+           }
+
+           if(resumeButton){
+               resumeButton.width = resumeButton.width + resumeButton.width / 2;
+               resumeButton.height = resumeButton.height + resumeButton.height / 2;
+           }
+
            if(small2 === true) {
                small2 = false;
                ground.height = ground.height + ground.height/2;
@@ -610,16 +630,24 @@
         if(pauseMenu){
             pauseMenu.width = game.world.width/3.010570824524313;
             pauseMenu.height = pauseMenu.width + 190;
+            pauseMenu.x = game.world.centerX - pauseMenu.width / 2;
+            //pauseMenu.y = game.world.centerY - pauseMenu.height / 2;
         }
         if(returnToHomeButton){
             returnToHomeButton.width = game.world.width / 5.498069498069498;
             returnToHomeButton.height = returnToHomeButton.width - 161;
+            returnToHomeButton = game.add.sprite(0, 0, 'returnToHome');
+            if(returnToHomeButton.y === 0){
+                returnToHomeButton.kill();
+            }
+            //returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
         }
         if(resumeButton){
             resumeButton.width = game.world.width / 6.532110091743119;
             resumeButton.height = resumeButton.width - 119;
+            resumeButton.x = game.world.centerX - resumeButton.width / 2;
+            //resumeButton.y = game.world.height - resumeButton.height * 3;
         }
-
     }
 
 
