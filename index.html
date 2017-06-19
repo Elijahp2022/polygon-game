@@ -48,6 +48,7 @@
     var Ry2;
     var Rx1;
     var Rx2;
+    var pausemenuResize = false;
 
     function resume(){
         game.paused = false;
@@ -100,23 +101,35 @@
         pauseMenu.y = game.world.centerY - pauseMenu.height / 2;
         returnToHomeButton = game.add.sprite(0, 0, 'returnToHome');
         returnToHomeButton.width = game.world.width / 5.498069498069498;
-        returnToHomeButton.height = returnToHomeButton.width - 161;
-        returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
-        if(small1 === false) {
-            returnToHomeButton.y = returnToHomeButton.height * 2;
+        if(returnToHomeButton.width < 115.85884831460675 || returnToHomeButton.width === 115.85884831460675){
+            returnToHomeButton.width = returnToHomeButton.width + returnToHomeButton.width / 2;
+            pausemenuResize = true;
         }
-        if(small1 === true){
-            returnToHomeButton.y = game.world.centerY + returnToHomeButton.height * 2;
+        returnToHomeButton.height = returnToHomeButton.width / 2.642857142857143;
+        returnToHomeButton.x = game.world.centerX - returnToHomeButton.width / 2;
+        if(pausemenuResize === true){
+            returnToHomeButton.y = game.world.centerY - returnToHomeButton.width;
+        }
+        if(pausemenuResize === false) {
+            if (small1 === false) {
+                returnToHomeButton.y = returnToHomeButton.height * 2;
+            }
+            if (small1 === true) {
+                returnToHomeButton.y = game.world.centerY - returnToHomeButton.height * 2;
+            }
         }
         resumeButton = game.add.sprite(0, 0, 'play');
         resumeButton.width = game.world.width / 6.532110091743119;
-        resumeButton.height = resumeButton.width - 119;
+        if(resumeButton.width < 97.5182584269663 || resumeButton.width === 97.5182584269663){
+            resumeButton.width = resumeButton.width + resumeButton.width / 2;
+        }
+        resumeButton.height = resumeButton.width / 2.202020202020202;
         resumeButton.x = game.world.centerX - resumeButton.width / 2;
         if(small1 === false) {
             resumeButton.y = game.world.height - resumeButton.height * 3;
         }
         if(small1 === true){
-            resumeButton.y = game.world.centerY - resumeButton.height * 7;
+            resumeButton.y = game.world.centerY + resumeButton.height * 1.5;
         }
         pause.kill();
     }
@@ -401,7 +414,10 @@
         //welcomeText.text.y = game.world.centerY + welcomeText.height/2;
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         playButton.width = game.world.width / 6.532110091743119;
-        playButton.height = playButton.width - 119;
+        if(playButton.width < 97.5182584269663 || playButton.width === 97.5182584269663){
+            playButton.width = playButton.width + playButton.width / 2;
+        }
+        playButton.height = playButton.width / 2.202020202020202;
         playButton.inputEnabled = true;
         playButton.events.onInputDown.add(setup, this);
     }
