@@ -48,7 +48,23 @@
     var Ry2;
     var Rx1;
     var Rx2;
+    var Ty1;
+    var Ty2;
+    var Tx1;
+    var Tx2;
     var pausemenuResize = false;
+    var howToPlayButton;
+    var howToPlayPic;
+
+    function howToPlay(){
+        pauseMenu.kill();
+        returnToHomeButton.kill();
+        howToPlayButton.kill();
+        howToPlayPic = game.add.sprite(0, 0, 'howToPlayPage');
+        howToPlayPic.anchor.set(1, 0);
+        howToPlayPic.x = game.world.centerX + howToPlayPic.width / 2;
+        howToPlayPic.y = game.world.centerY;
+    }
 
     function resume(){
         game.paused = false;
@@ -56,6 +72,8 @@
         returnToHomeButton.kill();
         resumeButton.kill();
         pauseMenu.kill();
+        howToPlayButton.kill();
+        howToPlayPic.kill();
 
         pause = game.add.sprite(game.world.width - 169, 50, 'pause');
         pause.width = game.world.width/28.48;
@@ -79,6 +97,11 @@
             Hx1 = returnToHomeButton.x;
             Hx2 = returnToHomeButton.x + returnToHomeButton.width;
 
+            Ty1 = howToPlayButton.y - howToPlayButton.height / 2;
+            Ty2 = howToPlayButton.y + howToPlayButton.height / 2;
+            Tx1 = howToPlayButton.x - howToPlayButton.width / 2;
+            Tx2 = howToPlayButton.x + howToPlayButton.width /2;
+
             if (event.x > Hx1 && event.x < Hx2 && event.y > Hy1 && event.y < Hy2) {
                 console.log("return to home screen");
                 game.paused = false;
@@ -88,6 +111,11 @@
             if(event.x > Rx1 && event.x < Rx2 && event.y > Ry1 && event.y < Ry2){
                 console.log("resume");
                 resume();
+            }
+
+            if(event.x > Tx1 && event.x < Tx2 && event.y > Ty1 && event.y < Ty2){
+                console.log("how to play screen");
+                howToPlay();
             }
         }
     }
@@ -101,6 +129,16 @@
         pauseMenu.y = game.world.centerY - pauseMenu.height / 2;
         returnToHomeButton = game.add.sprite(0, 0, 'returnToHome');
         returnToHomeButton.width = game.world.width / 5.498069498069498;
+        howToPlayButton = game.add.sprite(game.world.centerX, game.world.centerY, 'howToPlay');
+        howToPlayButton.anchor.set(0.5, 0.5);
+        howToPlayButton.x = game.world.centerX;
+        howToPlayButton.y = game.world.centerY;
+        howToPlayButton.width = game.world.width / 5.498069498069498;
+        if(howToPlayButton.width < 115.85884831460675 || howToPlayButton.width === 115.85884831460675) {
+            howToPlayButton.width = howToPlayButton.width + howToPlayButton.width / 2;
+            pausemenuResize = true;
+        }
+        howToPlayButton.height = howToPlayButton.width / 2.642857142857143;
         if(returnToHomeButton.width < 115.85884831460675 || returnToHomeButton.width === 115.85884831460675){
             returnToHomeButton.width = returnToHomeButton.width + returnToHomeButton.width / 2;
             pausemenuResize = true;
@@ -312,10 +350,16 @@
         game.load.image('menu', 'assets/pauseMenuBackgroun.png');
         game.load.image('returnToHome', 'assets/return_to_home_screen.png');
         game.load.image('resume', 'assets/playButton.png');
+        game.load.image('howToPlay', 'assets/howToPlayButton.png');
+        game.load.image('howToPlayPage', 'assets/howToPlayPic.png');
     }
 
       function create()
     {
+
+        if(howToPlayButton){
+            howToPlayButton.kill();
+        }
 
         firstTime = true;
         /*
