@@ -63,7 +63,7 @@
         howToPlayPic = game.add.sprite(0, 0, 'howToPlayPage');
         howToPlayPic.anchor.set(1, 0);
         howToPlayPic.x = game.world.centerX + howToPlayPic.width / 2;
-        howToPlayPic.y = game.world.centerY;
+        howToPlayPic.y = game.world.centerY - howToPlayPic.height / 2;
     }
 
     function resume(){
@@ -352,6 +352,7 @@
         game.load.image('resume', 'assets/playButton.png');
         game.load.image('howToPlay', 'assets/howToPlayButton.png');
         game.load.image('howToPlayPage', 'assets/howToPlayPic.png');
+        game.load.image('welcomeText', 'assets/welcomeText.png');
     }
 
       function create()
@@ -449,13 +450,19 @@
         highText.y = game.world.width /
                 14.24;
 */
-        welcomeText = game.add.text(15, 200, "welcome to the Game!! \ntap the screen to jump" +
-                ", avoid the spike balls which will kill you on contact, \n the green blocks will push you into the wall but you can stand on them without getting hurt \n" +
-                "try to get the highest score you can!!! press the play button below to start!!!");
-        welcomeText.width = game.world.width / 1.2181;
-        welcomeText.height = game.world.height / 5.8143;
-        //welcomeText.text.x = game.world.centerX + welcomeText.length/2;
-        //welcomeText.text.y = game.world.centerY + welcomeText.height/2;
+        /*welcomeText = game.add.text(15, 200, "Welcome to the Game!!! \nTap the screen to jump" +
+                ", \navoid the spikes which will kill you on contact, \nthe green blocks will push you into the wall \nbut you can stand on them without getting hurt \n" +
+                "try to get the highest score you can!!! \nPress the play button below to start!!!");*/
+       // welcomeText.width = game.world.width / 1.2181;
+       // welcomeText.height = game.world.height / 5.8143;
+        //welcomeText.text.anchor.set(.5, .5);
+        //welcomeText.text.x = game.world.centerX /*+ welcomeText.text.length/2*/;
+        //welcomeText.text.y = game.world.centerY /*+ welcomeText.text.height/2*/;
+        welcomeText = game.add.sprite(15, 200, 'welcomeText');
+        welcomeText.anchor.set(0.5, 0.5);
+        welcomeText.x = game.world.centerX;
+        welcomeText.y = game.world.centerY;
+
         playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
         playButton.width = game.world.width / 6.532110091743119;
         if(playButton.width < 97.5182584269663 || playButton.width === 97.5182584269663){
@@ -707,6 +714,9 @@
             resumeButton.height = resumeButton.width - 119;
             resumeButton.x = game.world.centerX - resumeButton.width / 2;
             //resumeButton.y = game.world.height - resumeButton.height * 3;
+        }
+        if(highText){
+            highText.x = game.world.centerX - highText.width/2;
         }
     }
 
