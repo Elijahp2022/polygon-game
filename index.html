@@ -55,6 +55,12 @@
     var pausemenuResize = false;
     var howToPlayButton;
     var howToPlayPic;
+    var loadingSprite;
+    var startGame = false;
+
+    function startgame(){
+        console.log("time is over");
+    }
 
     function howToPlay(){
         pauseMenu.kill();
@@ -65,7 +71,6 @@
         howToPlayPic.x = game.world.centerX + howToPlayPic.width / 2;
         howToPlayPic.y = game.world.centerY - howToPlayPic.height / 2;
     }
-
     function resume(){
         game.paused = false;
         pauseSwitch = false;
@@ -74,7 +79,6 @@
         pauseMenu.kill();
         howToPlayButton.kill();
         howToPlayPic.kill();
-
         pause = game.add.sprite(game.world.width - 169, 50, 'pause');
         pause.width = game.world.width/28.48;
         pause.height = pause.width;
@@ -84,44 +88,37 @@
             pauseSwitch = true;
         }
     }
-
     function unpause(event){
         if(game.paused) {
             Ry1 = resumeButton.y;
             Ry2 = resumeButton.y + resumeButton.height;
             Rx1 = resumeButton.x;
             Rx2 = resumeButton.x + resumeButton.width;
-
             Hy1 = returnToHomeButton.y;
             Hy2 = returnToHomeButton.y + returnToHomeButton.height;
             Hx1 = returnToHomeButton.x;
             Hx2 = returnToHomeButton.x + returnToHomeButton.width;
-
             Ty1 = howToPlayButton.y - howToPlayButton.height / 2;
             Ty2 = howToPlayButton.y + howToPlayButton.height / 2;
             Tx1 = howToPlayButton.x - howToPlayButton.width / 2;
             Tx2 = howToPlayButton.x + howToPlayButton.width /2;
-
             if (event.x > Hx1 && event.x < Hx2 && event.y > Hy1 && event.y < Hy2) {
                 console.log("return to home screen");
                 game.paused = false;
                 create();
             }
-
             if(event.x > Rx1 && event.x < Rx2 && event.y > Ry1 && event.y < Ry2){
                 console.log("resume");
                 resume();
             }
-
             if(event.x > Tx1 && event.x < Tx2 && event.y > Ty1 && event.y < Ty2){
                 console.log("how to play screen");
                 howToPlay();
             }
         }
     }
-
     function pauseGame(){
-            game.paused = true;
+        game.paused = true;
         pauseMenu = game.add.sprite(0, 0, 'menu');
         pauseMenu.width = game.world.width/3.010570824524313;
         pauseMenu.height = pauseMenu.width + 190;
@@ -171,7 +168,6 @@
         }
         pause.kill();
     }
-
     function setPos()
     {
         player.y = game.world.height - ground.height - player.height;
@@ -180,7 +176,6 @@
             player.y = 200;
         }
     }
-
     function setup(){
         pauseSwitch = false;
         firstTime = false;
@@ -194,11 +189,8 @@
             welcomeText.kill();
         }
         //timer.minutes = 0;
-
         reset = true;
-
         timer = game.time.create(false);
-
         if(playButton){
             playButton.kill();
         }
@@ -206,22 +198,17 @@
         player.visible = true;
         player.x = 50;
         //player.y = game.world.height - 94;
-
         timer.start();
-
         if(scoreText){
             scoreText.kill();
         }
         if(highText){
             highText.kill();
         }
-
         scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
         scoreText.x = game.world.centerX - scoreText.width / 2;
-
         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
         highText.x = game.world.centerX - highText.width / 2;
-
         pause = game.add.sprite(game.world.width - 169, 50, 'pause');
         pause.width = game.world.width/28.48;
         pause.height = pause.width;
@@ -230,47 +217,33 @@
             pause.inputEnabled = true;
             pauseSwitch = true;
         }
-
         makeObstacle = true;
-
         addLayer1();
-
-
         setPos();
-
         game.physics.arcade.collide(player, ground);
-
         done = false;
         playerLife = false;
         done = true;
         playerLife = true;
     }
-
     function addLayer1() {
-
         time = true;
         if(makeObstacle === false) {
             choice = Math.random();
-           // console.log(choice);
+            // console.log(choice);
         }
         else if(makeObstacle === true) {
             choice = 0.32;
             makeObstacle = false;
         }
-
         if(obstacle) {
             obstacle.kill();
         }
-
         if(block) {
             block.kill();
         }
-
         block = null;
         obstacle = null;
-
-
-
         if (choice < 0.34) {
             obstacle = game.add.sprite(game.world.width - 61, game.world.height - game.world.width / 15.1489, 'spikes');
             obstacle.enableBody = true;
@@ -291,52 +264,46 @@
             small = true;
         }
     }
-
-
-
     function killPlayer()
     {
-
-            done = true;
-            time = false;
-            stop = true;
-
-            player.visible = false;
-            if (obstacle) {
-                obstacle.kill();
-            }
-            if (block) {
-                block.kill();
-            }
-            playerLife = false;
-            if(scoreText){
-                scoreText.kill();
-            }
-            if(highText){
-                highText.kill();
-            }
-            if(timer){
-                timer.stop(true);}
-            if(scoreText){
-                scoreText = game.add.text(game.world.centerX - scoreText.width / 2, game.world.centerY, 'Score: ' + Math.round(score));
-            }
-            if(highText){
-                highText = game.add.text(game.world.centerX - highText.width / 2, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
-            }
-            if(playButton) {
-                playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
-                //playButton.scale.setTo(game.world.width / 6.65, 1);
-                playButton.width = game.world.width / 6.65;
-                playButton.height = game.world.width / 14.9894;
-                playButton.inputEnabled = true;
-                playButton.events.onInputDown.add(setup, setPos, this);
-            }
-            if(timer) {
-                timer.destroy();
-            }
-            pause.kill();
+        done = true;
+        time = false;
+        stop = true;
+        player.visible = false;
+        if (obstacle) {
+            obstacle.kill();
+        }
+        if (block) {
+            block.kill();
+        }
+        playerLife = false;
+        if(scoreText){
+            scoreText.kill();
+        }
+        if(highText){
+            highText.kill();
+        }
+        if(timer){
+            timer.stop(true);}
+        if(scoreText){
+            scoreText = game.add.text(game.world.centerX - scoreText.width / 2, game.world.centerY, 'Score: ' + Math.round(score));
+        }
+        if(highText){
+            highText = game.add.text(game.world.centerX - highText.width / 2, game.world.centerY + 50, 'High Score: ' + Math.round(highScore));
+        }
+        if(playButton) {
+            playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
+            //playButton.scale.setTo(game.world.width / 6.65, 1);
+            playButton.width = game.world.width / 6.65;
+            playButton.height = game.world.width / 14.9894;
+            playButton.inputEnabled = true;
+            playButton.events.onInputDown.add(setup, setPos, this);
+        }
+        if(timer) {
+            timer.destroy();
+        }
+        pause.kill();
     }
-
     function preload()
     {
         game.load.image('background', 'assets/polygonScreen.png');
@@ -353,145 +320,169 @@
         game.load.image('howToPlay', 'assets/howToPlayButton.png');
         game.load.image('howToPlayPage', 'assets/howToPlayPic.png');
         game.load.image('welcomeText', 'assets/welcomeText.png');
+        game.load.image('loading', 'assets/loadingSprite.png');
     }
+    function create() {
 
-      function create()
-    {
-
-        if(howToPlayButton){
-            howToPlayButton.kill();
-        }
-
-        firstTime = true;
-        /*
-            timer = game.time.create(false);
-
-            time = true;
-            /*if(playButton){
-            playButton.kill();
-            if(timer) {
-                timer.destroy();
+            if (howToPlayButton) {
+                howToPlayButton.kill();
             }
-        }*/
-
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        screen1 = game.add.sprite(0, 0, 'background');
-        screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
-        screen1.inputEnabled = true;
-
-        player = game.add.sprite(50, game.world.height - game.world.width / 14.24, 'triangle');
-        player.width = game.world.width / 20;
-        player.height = player.width - 10;
-        player.enableBody = true;
-        game.physics.arcade.enable(player);
-        player.visible = false;
-        if(player.height < 30){
-            small = true;
-            small1 = true;
-            small2 = true;
-        }
-
+            firstTime = true;
+            /*
+         timer = game.time.create(false);
+         time = true;
+         /*if(playButton){
+         playButton.kill();
+         if(timer) {
+         timer.destroy();
+         }
+         }*/
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            screen1 = game.add.sprite(0, 0, 'background');
+            screen1.scale.setTo(document.body.offsetWidth, document.body.offsetHeight);
+            screen1.inputEnabled = true;
         top1 = game.add.sprite(0, 0, 'ground');
         top1.scale.setTo(game.world.width, 1);
         top1.height = game.world.width / 44.5;
         top1.enableBody = true;
         game.physics.arcade.enable(top1);
         top1.body.immovable = true;
-
         worldBounds = game.add.sprite(-32, 0, 'worldBounds');
         worldBounds.scale.setTo(1, game.world.height);
         worldBounds.enableBody = true;
         game.physics.arcade.enable(worldBounds);
         worldBounds.body.immovable = true;
-
         worldBoundsBottom = game.add.sprite(0, game.world.height - 32, 'worldBounds');
         worldBoundsBottom.angle = 90;
         worldBoundsBottom.scale.setTo(game.world.width, 1);
         worldBoundsBottom.enableBody = true;
         game.physics.arcade.enable(worldBoundsBottom);
         worldBoundsBottom.immovable = true;
-
         ground = game.add.sprite(0, game.world.height - 32, 'ground');
         ground.scale.setTo(game.world.width, 1);
         ground.height = game.world.width / 44.5;
         ground.enableBody = true;
         game.physics.arcade.enable(ground);
         ground.body.immovable = true;
-
         posReset = game.add.sprite(0, ground.y + 2, 'worldBounds');
         posReset.scale.setTo(game.world.width, 1);
         posReset.enableBody = true;
         game.physics.arcade.enable(posReset);
         posReset.immovable = true;
-
-        obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
-        obstacle.kill();
-        block = game.add.sprite(0, 0, 'ground');
-        block.kill();
-
-        highScore = 0;
-        //obstacle.enableBody = true;
-        //game.physics.arcade.enable(obstacle);
-        //obstacle.body.velocity.x = -300;
-        /*
-        addLayer1();
-
-        //this.timer.seconds = 0;
-        timer.start();
-        playerLife = true;
-
-        scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
-
-        highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
-
-        scoreText.x = game.world.centerX - scoreText.width / 2;
-        highText.x = game.world.centerX - highText.width / 2;
-        scoreText.y = game.world.width / 28.48;
-        highText.y = game.world.width /
-                14.24;
-*/
-        /*welcomeText = game.add.text(15, 200, "Welcome to the Game!!! \nTap the screen to jump" +
-                ", \navoid the spikes which will kill you on contact, \nthe green blocks will push you into the wall \nbut you can stand on them without getting hurt \n" +
-                "try to get the highest score you can!!! \nPress the play button below to start!!!");*/
-       // welcomeText.width = game.world.width / 1.2181;
-       // welcomeText.height = game.world.height / 5.8143;
-        //welcomeText.text.anchor.set(.5, .5);
-        //welcomeText.text.x = game.world.centerX /*+ welcomeText.text.length/2*/;
-        //welcomeText.text.y = game.world.centerY /*+ welcomeText.text.height/2*/;
-        welcomeText = game.add.sprite(15, 200, 'welcomeText');
-        welcomeText.anchor.set(0.5, 0.5);
-        welcomeText.x = game.world.centerX;
-        welcomeText.y = game.world.centerY;
-
-        playButton = game.add.sprite(game.world.centerX, game.world.centerY + 100, 'play');
-        playButton.width = game.world.width / 6.532110091743119;
-        if(playButton.width < 97.5182584269663 || playButton.width === 97.5182584269663){
-            playButton.width = playButton.width + playButton.width / 2;
+            loadingSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'loading');
+            loadingSprite.x = game.world.centerX - loadingSprite.width / 2;
+            loadingSprite.y = game.world.centerY - loadingSprite.height / 2;
+        if(startGame === false) {
+            startGame = true;
+            game.time.events.add(Phaser.Timer.SECOND * 2, create, this);
         }
-        playButton.height = playButton.width / 2.202020202020202;
-        playButton.inputEnabled = true;
-        playButton.events.onInputDown.add(setup, this);
-    }
 
+            else {
+            if(loadingSprite){
+                loadingSprite.kill();
+            }
+            player = game.add.sprite(50, game.world.height - game.world.width / 14.24, 'triangle');
+            player.width = game.world.width / 20;
+            player.height = player.width - 10;
+            player.enableBody = true;
+            game.physics.arcade.enable(player);
+            player.visible = false;
+            if (
+                    player.height < 30) {
+                small = true;
+                small1 = true
+                ;
+                small2 = true
+                ;
+            }
+
+            obstacle = game.add.sprite(game.world.width - 61, game.world.height - 94, 'spikes');
+            obstacle.kill();
+            block = game.add.sprite(0, 0, 'ground');
+            block.kill();
+            highScore = 0;
+            //obstacle.enableBody = true;
+            //game.physics.arcade.enable(obstacle);
+            //obstacle.body.velocity.x = -300;
+            /*
+         addLayer1();
+         //this.timer.seconds = 0;
+         timer.start();
+         playerLife = true;
+         scoreText = game.add.text(game.world.centerX, 50, 'Score: ' + 0);
+         highText = game.add.text(game.world.centerX, 100, 'High Score: ' + highScore);
+         scoreText.x = game.world.centerX - scoreText.width / 2;
+         highText.x = game.world.centerX - highText.width / 2;
+         scoreText.y = game.world.width / 28.48;
+         highText.y = game.world.width /
+         14.24;
+         */
+            /*welcomeText = game.add.text(15, 200, "Welcome to the Game!!! \nTap the screen to jump" +
+         ", \navoid the spikes which will kill you on contact, \nthe green blocks will push you into the wall \nbut you can stand on them without getting hurt \n" +
+         "try to get the highest score you can!!! \nPress the play button below to start!!!");*/
+            // welcomeText.width = game.world.width / 1.2181;
+            // welcomeText.height = game.world.height / 5.8143;
+        //welcomeText.text.anchor.set(.5, .5);
+            //welcomeText.text.x = game.world.centerX /*+ welcomeText.text.length/2*/;
+            //welcomeText.text.y = game.world.centerY /*+ welcomeText.text.height/2*/;
+        if(startGame === true) {
+            welcomeText = game.add.sprite(15, 200,
+                    'welcomeText');
+            welcomeText.anchor.set(0.5,
+                    0.5);
+            welcomeText.x =
+                    game.world.centerX;
+            welcomeText.y = game.world.centerY;
+            playButton = game.add.sprite(game.world.centerX,
+                    game.world.centerY + 100, 'play');
+            playButton.width = game.world.width /
+                    6.532110091743119;
+            if (playButton.width < 97.5182584269663 ||
+                    playButton.width === 97.5182584269663) {
+                playButton.width =
+                        playButton.width +
+                        playButton.width / 2;
+            }
+            playButton.height =
+                    playButton.width / 2.202020202020202;
+            playButton.inputEnabled = true;
+            playButton.events.onInputDown.add(setup, this);
+        }
+        }
+    }
     function update() {
+
+        if(loadingSprite){
+            loadingSprite.width = game.world.width / 6.273127753303965;
+            loadingSprite.height = loadingSprite.width - 61;
+        }
+
+        if(startGame === false) {
+            loadingSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'loading');
+            loadingSprite.x = game.world.centerX - loadingSprite.width / 2;
+            loadingSprite.y = game.world.centerY - loadingSprite.height / 2;
+        }
         if (playButton) {
             playButton.x = game.world.centerX - playButton.width / 2;
         }
 
         ground.y = game.world.height - ground.height;
-
         game.physics.arcade.collide(player, ground);
         game.physics.arcade.collide(player, top1);
-        game.physics.arcade.collide(player, obstacle, killPlayer);
-        game.physics.arcade.collide(player, block);
-        game.physics.arcade.collide(player, worldBounds, killPlayer);
-        game.physics.arcade.overlap(player, worldBoundsBottom, setPos);
+        if(player) {
+            game.physics.arcade.collide(player, obstacle, killPlayer);
+        }
+        if(block) {
+            game.physics.arcade.collide(player, block);
+        }
+        if(player) {
+            game.physics.arcade.collide(player, worldBounds, killPlayer);
+            game.physics.arcade.overlap(player, worldBoundsBottom, setPos);
+        }
         //game.physics.arcade.overlap(player, posReset, setPos, null, this);
         //game.physics.arcade.collide(player, posReset, setPos);
-
         speed = score * 100;
-
-        if (player.body.touching.down && game.input.activePointer.isDown) {
+        if ( player && player.body.touching.down && game.input.activePointer.isDown) {
             if (small1 === false && obstacle) {
                 jump = obstacle.y / 2;
             }
@@ -501,7 +492,6 @@
                 }
             }
         }
-
         if (time === true /*&& timer.seconds > 0 || timer.seconds === 0*/) {
             score = timer.seconds;
         }
@@ -515,31 +505,26 @@
         }
         if (scoreText){
             scoreText.text = 'Score: ' + Math.round(score);
-    }
-    if(highText) {
-        highText.text = 'High Score: ' + Math.round(highScore);
-    }
-
-            if (obstacle !== null && obstacle.x <= - 72) {
-                addLayer1();
-            } else if(block !== null && block.x <= - 125 ) {
-                addLayer1();
-            }
-
+        }
+        if(highText) {
+            highText.text = 'High Score: ' + Math.round(highScore);
+        }
+        if (obstacle && obstacle !== null && obstacle.x <= - 72) {
+            addLayer1();
+        } else if(block && block !== null && block.x <= - 125 ) {
+            addLayer1();
+        }
         else {
-                if (playerLife === false) {
-                    if (obstacle !== null) {
-                        obstacle.kill();
-                    }
-
-                    if (block !== null) {
-                        block.kill();
-                    }
+            if (playerLife === false) {
+                if (obstacle !== null) {
+                    obstacle.kill();
+                }
+                if (block !== null) {
+                    block.kill();
                 }
             }
-
-
-        if(player.body.velocity.y === 0 && player.y < game.world.height - ground.height * 2.93 && block){
+        }
+        if(player && player.body.velocity.y === 0 && player.y < game.world.height - ground.height * 2.93 && block){
             if(player && firstTime === false){
                 player.body.velocity.x = block.body.velocity.x - block.body.velocity.x - block.body.velocity.x;
             }
@@ -549,25 +534,20 @@
                 player.body.velocity.x = 0;
             }
         }
-
         if(score > highScore){
             highScore = score
         }
-
         if(playerLife === false && done === false){
             score = 0;
         }
-
-       // if(player.y > game.world.height - ground.height){
-         //   setPos();
-           // player.y = game.world.height - 100;
-           // console.log("player is below ground");
+        // if(player.y > game.world.height - ground.height){
+        //   setPos();
+        // player.y = game.world.height - 100;
+        // console.log("player is below ground");
         //}
-
-        if(player.visible === false){
+        if(player && player.visible === false){
             setPos();
         }
-
         if(obstacle && small1 === false){
             if(firstTime === false) {
                 obstacle.body.velocity.x = 0 - (score * 8 + game.world.width / 3);
@@ -575,7 +555,6 @@
                 obstacle.height = obstacle.width + 0;
             }
         }
-
         if(block && small1 === false){
             if(firstTime === false) {
                 block.body.velocity.x = 0 - (score * 8 + game.world.width / 3);
@@ -583,106 +562,96 @@
                 block.height = game.world.width / 44.5;
             }
         }
-
         /*if(reset === true){
-            score = 0;
-            timer.seconds = 0;
-            reset = false;
-        }*/
-
+         score = 0;
+         timer.seconds = 0;
+         reset = false;
+         }*/
         if(timer) {
             if (timer.seconds < 33) {
                 timer.seconds = 0;
             }
         }
         worldBoundsBottom.y = game.world.height - ground.height + 2;
-
         if(small === true){
             small = false;
             if(small2 === true) {
                 player.width = player.width + player.width;
                 player.height = player.height + player.height/2;
             }
-
-           if(obstacle) {
-               if(firstTime === false) {
-                   obstacle.width = obstacle.width - obstacle.width / 4;
-                   obstacle.height = obstacle.height - obstacle.height / 4;
-                   obstacle.y = obstacle.y - obstacle.height;
-                   obstacle.body.velocity.x = 0 - (score * 8 + 300);
-                   jump = obstacle.y / 3 + player.height / 4 + 20;
-               }
-           }
-
-           if(block){
-               if(firstTime === false) {
-                   block.width = block.width - block.width / 2;
-                   block.height = block.height - block.height / 2;
-                   block.y = block.y - block.height;
-                   block.body.velocity.x = 0 - (score * 8 + 300);
-               }
-           }
-
-           if(pauseMenu){
-               pauseMenu.width = pauseMenu.width + pauseMenu.width / 2;
-               pauseMenu.height = pauseMenu.height + pauseMenu.height / 2;
-           }
-
-           if(resumeButton){
-               resumeButton.width = resumeButton.width + resumeButton.width / 2;
-               resumeButton.height = resumeButton.height + resumeButton.height / 2;
-           }
-
-           if(small2 === true) {
-               small2 = false;
-               ground.height = ground.height + ground.height/2;
-               top.height = top.height + top.height/2;
-           }
+            if(obstacle) {
+                if(firstTime === false) {
+                    obstacle.width = obstacle.width - obstacle.width / 4;
+                    obstacle.height = obstacle.height - obstacle.height / 4;
+                    obstacle.y = obstacle.y - obstacle.height;
+                    obstacle.body.velocity.x = 0 - (score * 8 + 300);
+                    jump = obstacle.y / 3 + player.height / 4 + 20;
+                }
+            }
+            if(block){
+                if(firstTime === false) {
+                    block.width = block.width - block.width / 2;
+                    block.height = block.height - block.height / 2;
+                    block.y = block.y - block.height;
+                    block.body.velocity.x = 0 - (score * 8 + 300);
+                }
+            }
+            if(pauseMenu){
+                pauseMenu.width = pauseMenu.width + pauseMenu.width / 2;
+                pauseMenu.height = pauseMenu.height + pauseMenu.height / 2;
+            }
+            if(resumeButton){
+                resumeButton.width = resumeButton.width + resumeButton.width / 2;
+                resumeButton.height = resumeButton.height + resumeButton.height / 2;
+            }
+            if(small2 === true) {
+                small2 = false;
+                ground.height = ground.height + ground.height/2;
+                top.height = top.height + top.height/2;
+            }
         }
-
         //if(small === false){
-          //  jump = obstacle.y/2;
+        //  jump = obstacle.y/2;
         //}
-        if(player.y - player.height > ground.y || player.y - player.height === ground.y){
-            setPos();
-        }
-
-
-        if(player.body.touching.down || player.y - player.height > ground.y){
-            down = true;
-        }
-        if(!player.body.touching.down || player.y - player.height < ground.y){
-
-            down = false;
-        }
-
-        if(down === true){
-            setPos();
-        }
-
-        if(player.body.velocity.y > 0 && player.y === game.world.height - player.height - ground.height){
-            setPos();
-            player.y = game.world.height - ground.height - player.height - player.height / 3;
-        }
-        if(obstacle) {
-            Htemplate = game.world.height + game.world.height / 9.69047619048;
-        }
-        if(player.height < 30){
-            player.body.gravity.y = Htemplate;
-        }
-        else{
-            player.body.gravity.y = Htemplate / 1.5;
+        if(player) {
+            if (player && player.y - player.height > ground.y || player.y - player.height === ground.y) {
+                setPos();
+            }
+            if (player && player.body.touching.down || player.y - player.height > ground.y) {
+                down = true;
+            }
+            if (player && !player.body.touching.down || player.y - player.height < ground.y) {
+                down = false;
+            }
+            if (down === true) {
+                setPos();
+            }
+            if (player && player.body.velocity.y > 0 && player.y === game.world.height - player.height - ground.height) {
+                setPos();
+                player.y = game.world.height - ground.height - player.height - player.height / 3;
+            }
+            if (obstacle) {
+                Htemplate = game.world.height + game.world.height / 9.69047619048;
+            }
+            if (player && player.height < 30) {
+                player.body.gravity.y = Htemplate;
+            }
+            else {
+                if (player) {
+                    player.body.gravity.y = Htemplate / 1.5;
+                }
+            }
         }
         if(firstTime === true) {
-        //    killPlayer();
+            //    killPlayer();
         }
-        if(/*player.y + player.height === ground.y ||*/ player.y + player.height > ground.y){
+        if(player && /*player.y + player.height === ground.y ||*/ player.y + player.height > ground.y){
             setPos();
         }
-        if(player.visible === false ){
+        if(player && player.visible === false ){
             player.y = game.world.height - ground.height - player.height;
         }
-        if(firstTime === true){
+        if(player && firstTime === true){
             player.y = game.world.height - ground.height - player.height;
         }
         if(pauseSwitch === true) {
@@ -691,7 +660,6 @@
             }
         }
         if(game.paused === true){
-
         }
         game.input.onDown.add(unpause, self);
         if(pauseMenu){
@@ -719,8 +687,6 @@
             highText.x = game.world.centerX - highText.width/2;
         }
     }
-
-
 </script>
 </body>
 </html>
